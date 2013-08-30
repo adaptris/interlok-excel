@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE adapter [
+  <!ENTITY ADAPTER_UNIQUE_ID 'adp-poi'>
+  <!ENTITY ADAPTER_FS_ROOT 'file:./fs'>
+  <!ENTITY FS_CONSUME_DIR  'fs-consume'>
+  <!ENTITY FS_PRODUCE_DIR  'fs-produce'>
+ ]>
+
+
+ <!-- 
+ The EXAMPLE input for this adapter should be resources/tests/test-input-header-row.xls
+ <number-format> is missing in the expectation that you can do that in your subsequent mapping rather than
+ to do something fancy here.
+ -->
+<adapter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <unique-id>&ADAPTER_UNIQUE_ID;</unique-id>
+  <heartbeat-interval>600000</heartbeat-interval>
+
+  <channel-list>
+    <channel>
+      <workflow-list>
+        <workflow xsi:type="java:com.adaptris.core.StandardWorkflow">
+          <consumer xsi:type="java:com.adaptris.core.fs.FsConsumer">
+              <destination xsi:type="java:com.adaptris.core.ConfiguredConsumeDestination">
+                  <destination>&ADAPTER_FS_ROOT;/&ADAPTER_UNIQUE_ID;/&FS_CONSUME_DIR;</destination>
+                  <configured-thread-name>ExcelToXml</configured-thread-name>
+              </destination>
+              <poller xsi:type="java:com.adaptris.core.QuartzCronPoller">
+                <cron-expression>*/5 * * * * ?</cron-expression>
+              </poller>
+              <create-dirs>true</create-dirs>
+          </consumer>
+          <service-collection xsi:type="java:com.adaptris.core.ServiceList">
+            <service xsi:type="java:com.adaptris.labs.poi.ExcelToXml">
+              <xml-style>
+                <element-naming-style>HEADER_ROW</element-naming-style>
+                <emit-data-type-attr>true</emit-data-type-attr>
+                <emit-row-number-attr>true</emit-row-number-attr>
+                <emit-cell-position-attr>true</emit-cell-position-attr>
+                <header-row>5</header-row>
+                <date-format>yyyy-MM-dd'T'HH:mm:ssZ</date-format>
+              </xml-style>
+            </service>
+          </service-collection>
+          <producer xsi:type="java:com.adaptris.core.fs.FsProducer">
+              <destination xsi:type="java:com.adaptris.core.ConfiguredProduceDestination">
+                  <destination>&ADAPTER_FS_ROOT;/&ADAPTER_UNIQUE_ID;/&FS_PRODUCE_DIR;</destination>
+              </destination>
+              <create-dirs>true</create-dirs>
+          </producer>
+         </workflow>
+      </workflow-list>
+    </channel>
+  </channel-list>
+</adapter>
