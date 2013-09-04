@@ -1,7 +1,7 @@
 <!--
 
 -->
-<project basedir="." default="dist" name="adp-poi" xmlns:adapter="uri:adapter" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project basedir="." default="dist" name="poi" xmlns:adapter="uri:adapter" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property file="build.properties"/>
   <property file="ivy.properties"/>
@@ -21,7 +21,7 @@
     <property name="build.classes.dir" value="${build.dir}/classes"/>
 
     <property name="project.dist.dir" value="${build.dir}/dist"/>
-    <property name="project.name" value = "${ant.project.name}"/>
+    <property name="project.name" value = "adp-${ant.project.name}"/>
     <property name="project.dir" value = "${basedir}"/>
     <property name="project.resources" value="${resources.dir}"/>
     <property name="project.jar.name" value = "${project.name}.jar"/>
