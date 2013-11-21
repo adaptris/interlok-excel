@@ -6,14 +6,14 @@
   <property file="build.properties"/>
   <property file="ivy.properties"/>
   <import file="${basedir}/../resources/ant-ivy-includes.xml"/>
-  
+
   <tstamp>
     <format property="today" pattern="yyyy-MM-dd" locale="en"/>
   </tstamp>
 
   <target name="init" description="Initialisation">
 
-    <property name="manifest.title" value="POI Excel"/>
+    <property name="manifest.title" value="Interlok POI Excel Integration"/>
     <property name="manifest.vendor" value="Adaptris Ltd"/>
     <property name="ivy.publish.revision" value="3.0-SNAPSHOT"/>  <!-- Version number of this artifact -->
     <property name="adp-core-version" value="3.0-SNAPSHOT"/>
@@ -45,14 +45,14 @@
     <property name="javac.version" value="1.7"/>
     <property name="javac.include.classes"  value="**/*.java" />
     <property name="junit.test.classes"     value="**/*Test*.java" />
-		
+
 	<property name="build.tmp.dir" value="${build.dir}/tmp"/>
 
     <property name="project.jar.name" value = "${project.name}.jar"/>
 
     <property name="tmp.jar.name" value = "${project.name}-tmp.jar"/>
     <property name="yguard.report" value="${build.dir}/${project.name}-${jar.version}.yguard.xml.gz"/>
-	
+
 	<property name="no.cobertura" value="false"/>
   </target>
 
@@ -80,7 +80,7 @@
       <classpath refid="main.classpath"/>
     </javac>
   </target>
-  
+
   <target name="jar.resources" depends="prepare">
     <!-- build the manifest file -->
     <property name="manifest.jar.version" value="${jar.version}"/>
@@ -165,5 +165,5 @@
   <target name="example-xml.zip" depends="init" description="Build the example xml zip file">
     <zip destfile = "${example-xml.doc.zip}" basedir="${example-xml.build.dir}" />
   </target>
-  
+
 </project>
