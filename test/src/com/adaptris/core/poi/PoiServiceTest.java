@@ -50,6 +50,7 @@ public class PoiServiceTest extends ServiceCase {
   public void testService() throws Exception {
     AdaptrisMessage msg = dMessageFactory.newMessage(readFile(PROPERTIES.getProperty(KEY_SAMPLE_INPUT)));
     ExcelToXml service = new ExcelToXml();
+    service.getXmlStyle().setXmlEncoding("UTF-8");
     try {
       start(service);
       service.doService(msg);

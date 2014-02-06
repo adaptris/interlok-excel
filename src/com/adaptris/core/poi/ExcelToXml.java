@@ -43,7 +43,7 @@ public class ExcelToXml extends ServiceImp {
       workbook = new HSSFWorkbook(new POIFSFileSystem(in));
       Document d = converter.convertToXml(workbook, getXmlStyle());
       new XmlUtils().writeDocument(d, out, getXmlStyle().xmlEncoding());
-
+      msg.setCharEncoding(getXmlStyle().xmlEncoding());
     }
     catch (Exception e) {
       throw new ServiceException(e);
