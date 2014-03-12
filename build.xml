@@ -53,7 +53,6 @@
     <property name="tmp.jar.name" value = "${project.name}-tmp.jar"/>
     <property name="yguard.report" value="${build.dir}/${project.name}-${jar.version}.yguard.xml.gz"/>
 
-	<property name="no.cobertura" value="false"/>
   </target>
 
   <target name="clean" depends="init" description="Delete compiled Objects">
