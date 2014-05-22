@@ -13,12 +13,17 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.adaptris.util.XmlUtils;
+import com.adaptris.util.license.License;
+import com.adaptris.util.license.License.LicenseType;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 
 /**
  * Service to extract data from an Excel spreadsheet.
- *
+ * <p>
+ * Requires a Standard License
+ * </p>
+ * 
  * @author lchan
  * 
  */
@@ -80,4 +85,11 @@ public class ExcelToXml extends ServiceImp {
   public void setXmlStyle(XmlStyle style) {
     xmlStyle = style;
   }
+
+  @Override
+  public boolean isEnabled(License license) throws CoreException {
+    return license.isEnabled(LicenseType.Standard);
+  }
+  
+
 }
