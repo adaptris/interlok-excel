@@ -20,10 +20,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Service to extract data from an Excel spreadsheet.
- * <p>
- * Requires a Standard License
- * </p>
  * 
+ * @config excel-to-xml-service
+ * @license STANDARD
  * @author lchan
  * 
  */
