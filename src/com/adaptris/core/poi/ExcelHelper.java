@@ -4,6 +4,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaError;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -71,8 +72,13 @@ public class ExcelHelper {
       @Override
       public CellHandler getHandler(Cell cell) {
         if (myCellType == cell.getCellType()) {
-          if (DateUtil.isCellDateFormatted(cell)) {
-            return DATE_CELL;
+          try {
+            if (DateUtil.isCellDateFormatted(cell)) {
+              return DATE_CELL;
+            }
+          }
+          catch (Exception e) {
+            // Expect this error if the cell contains an invalid formula
           }
           return this;
         }
@@ -81,7 +87,20 @@ public class ExcelHelper {
 
       @Override
       public String getValue(Cell cell, XmlStyle style) {
-        return style.format(cell.getNumericCellValue());
+        try {
+          return style.format(cell.getNumericCellValue());
+        }
+        catch (Exception e) {
+          // Expect this error if the cell contains formula that doesn't create number
+          try {
+            return cell.getRichStringCellValue().getString();
+          }
+          catch (Exception e1) {
+            // Expect this error if the cell contains an invalid formula
+            String errorString = FormulaError.forInt(cell.getErrorCellValue()).getString();
+            return errorString;
+          }
+        }
       }
     },
     // Use -1 to represent the type as it isn't really a type, it's just formatting type.
