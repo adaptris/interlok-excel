@@ -1,15 +1,19 @@
 package com.adaptris.core.poi;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import com.adaptris.util.GuidGenerator;
 
 /**
  * Various helper methods for handling the horrible spreadsheet format.
- *
+ * 
  * @author lchan
- *
+ * 
  */
 public class ExcelHelper {
 
@@ -40,15 +44,17 @@ public class ExcelHelper {
   };
   private static final String REPLACEMENT_VALUE = "_";
 
+  private static final GuidGenerator guid = new GuidGenerator();
+
   // Obtuse use of enums as both an interface and factory...
   // Because the type handlers are very small classes, there's not much
   // point having an abstract class / interface and a bunch of separate implementations.
   public enum CellHandler {
-    NUMERIC_CELL(XML_ATTR_TYPE_NUMERIC, HSSFCell.CELL_TYPE_NUMERIC) {
+    NUMERIC_CELL(XML_ATTR_TYPE_NUMERIC, Cell.CELL_TYPE_NUMERIC) {
       @Override
-      public CellHandler getHandler(HSSFCell cell) {
+      public CellHandler getHandler(Cell cell) {
         if (myCellType == cell.getCellType()) {
-          if (HSSFDateUtil.isCellDateFormatted(cell)) {
+          if (DateUtil.isCellDateFormatted(cell)) {
             return DATE_CELL;
           }
           return this;
@@ -57,15 +63,15 @@ public class ExcelHelper {
       }
 
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return style.format(cell.getNumericCellValue());
       }
     },
-    FORMULA_CELL(XML_ATTR_TYPE_FORMULA, HSSFCell.CELL_TYPE_FORMULA) {
+    FORMULA_CELL(XML_ATTR_TYPE_FORMULA, Cell.CELL_TYPE_FORMULA) {
       @Override
-      public CellHandler getHandler(HSSFCell cell) {
+      public CellHandler getHandler(Cell cell) {
         if (myCellType == cell.getCellType()) {
-          if (HSSFDateUtil.isCellDateFormatted(cell)) {
+          if (DateUtil.isCellDateFormatted(cell)) {
             return DATE_CELL;
           }
           return this;
@@ -74,67 +80,68 @@ public class ExcelHelper {
       }
 
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return style.format(cell.getNumericCellValue());
       }
     },
     // Use -1 to represent the type as it isn't really a type, it's just formatting type.
     DATE_CELL(XML_ATTR_TYPE_DATE, -1) {
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
-        return style.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
+      public String getValue(Cell cell, XmlStyle style) {
+        return style.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
       }
     },
-    STRING_CELL(XML_ATTR_TYPE_STRING, HSSFCell.CELL_TYPE_STRING) {
+    STRING_CELL(XML_ATTR_TYPE_STRING, Cell.CELL_TYPE_STRING) {
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return cell.getRichStringCellValue().getString();
       }
 
     },
-    BOOLEAN_CELL(XML_ATTR_TYPE_BOOLEAN, HSSFCell.CELL_TYPE_BOOLEAN) {
+    BOOLEAN_CELL(XML_ATTR_TYPE_BOOLEAN, Cell.CELL_TYPE_BOOLEAN) {
 
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return String.valueOf(cell.getBooleanCellValue());
       }
 
     },
-    ERROR_CELL(XML_ATTR_TYPE_ERROR, HSSFCell.CELL_TYPE_ERROR) {
+    ERROR_CELL(XML_ATTR_TYPE_ERROR, Cell.CELL_TYPE_ERROR) {
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return String.valueOf(cell.getErrorCellValue());
       }
     },
-    BLANK_CELL(XML_ATTR_TYPE_BLANK, HSSFCell.CELL_TYPE_BLANK) {
+    BLANK_CELL(XML_ATTR_TYPE_BLANK, Cell.CELL_TYPE_BLANK) {
       @Override
-      public String getValue(HSSFCell cell, XmlStyle style) {
+      public String getValue(Cell cell, XmlStyle style) {
         return "";
       }
     };
 
     String myType;
     int myCellType;
+
     CellHandler(String type, int cellType) {
       myType = type;
       myCellType = cellType;
     }
 
-    public CellHandler getHandler(HSSFCell cell) {
+    public CellHandler getHandler(Cell cell) {
       if (myCellType == cell.getCellType()) {
         return this;
       }
       return null;
     }
 
-    public abstract String getValue(HSSFCell cell, XmlStyle style);
+    public abstract String getValue(Cell cell, XmlStyle style);
 
     public String getType() {
       return myType;
     }
   };
 
-  protected static CellHandler getHandler(HSSFCell cell) throws Exception {
+  protected static CellHandler getHandler(Cell cell) throws Exception {
     if (cell == null) {
       return CellHandler.BLANK_CELL;
     }
@@ -152,7 +159,7 @@ public class ExcelHelper {
     return handler;
   }
 
-  protected static int getRowCount(HSSFSheet sheet) {
+  protected static int getRowCount(Sheet sheet) {
     int result = sheet.getLastRowNum();
     // 0 means 0 rows on the sheet, or one at position zero.
     if (result == 0) {
@@ -164,11 +171,11 @@ public class ExcelHelper {
     return result;
   }
 
-  protected static int getCellCount(HSSFSheet sheet) {
+  protected static int getCellCount(Sheet sheet) {
     int result = 0;
     int highRow = getRowCount(sheet);
     for (int i = sheet.getFirstRowNum(); i < highRow; i++) {
-      HSSFRow row = sheet.getRow(i);
+      Row row = sheet.getRow(i);
       if (row != null && row.getPhysicalNumberOfCells() > result) {
         result = row.getLastCellNum();
       }
@@ -197,6 +204,9 @@ public class ExcelHelper {
     String name = input;
     for (String invalid : INVALID_CHARS) {
       name = name.replaceAll(invalid, REPLACEMENT_VALUE);
+    }
+    if (isEmpty(name)) {
+      name = "blank_" + guid.safeUUID();
     }
     return name;
   }

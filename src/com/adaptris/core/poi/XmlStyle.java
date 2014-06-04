@@ -11,11 +11,9 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * Controls the XML look and feel for ExcelToXml.
@@ -23,7 +21,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author lchan
  *
  */
-@XStreamAlias("xml-style-element")
 public class XmlStyle {
   private boolean emitDataTypeAttr;
   private boolean emitRowNumberAttr;
@@ -41,7 +38,7 @@ public class XmlStyle {
   public enum ElementNaming {
     SIMPLE {
       @Override
-      void applyNames(HSSFSheet sheet, String[] names, XmlStyle style) {
+      void applyNames(Sheet sheet, String[] names, XmlStyle style) {
         for (int i = 0; i < names.length; i++) {
           names[i] = "cell";
         }
@@ -51,7 +48,7 @@ public class XmlStyle {
     CELL_POSITION {
 
       @Override
-      void applyNames(HSSFSheet sheet, String[] names, XmlStyle style) {
+      void applyNames(Sheet sheet, String[] names, XmlStyle style) {
         for (int i = 0; i < names.length; i++) {
           names[i] = createCellName(i);
         }
@@ -60,23 +57,23 @@ public class XmlStyle {
 
     HEADER_ROW {
       @Override
-      void applyNames(HSSFSheet sheet, String[] names, XmlStyle style) {
-        HSSFRow headerRow = sheet.getRow(style.headerRow() - 1);
+      void applyNames(Sheet sheet, String[] names, XmlStyle style) {
+        Row headerRow = sheet.getRow(style.headerRow() - 1);
         for (int i = 0; i < names.length; i++) {
-          HSSFCell cell = headerRow.getCell(i);
+          Cell cell = headerRow.getCell(i);
           names[i] = safeName(cell.getRichStringCellValue().getString());
         }
       }
     };
 
-    public String[] createColumnNames(HSSFSheet sheet, XmlStyle style) {
+    public String[] createColumnNames(Sheet sheet, XmlStyle style) {
       int nCells = getCellCount(sheet);
       String[] columnNames = new String[nCells];
       applyNames(sheet, columnNames, style);
       return columnNames;
     }
 
-    abstract void applyNames(HSSFSheet sheet, String[] placeholders, XmlStyle style);
+    abstract void applyNames(Sheet sheet, String[] placeholders, XmlStyle style);
   }
 
   public XmlStyle() {

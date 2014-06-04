@@ -3,8 +3,8 @@ package com.adaptris.core.poi;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
 import org.w3c.dom.Document;
 
@@ -37,17 +37,17 @@ public class ExcelToXml extends ServiceImp {
 
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
-    HSSFWorkbook workbook = null;
+    Workbook workbook = null;
     InputStream in = null;
     OutputStream out = null;
     ExcelConverter converter = new ExcelConverter();
     try {
       in = msg.getInputStream();
       out = msg.getOutputStream();
-      workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      workbook = WorkbookFactory.create(in);
       Document d = converter.convertToXml(workbook, getXmlStyle());
       new XmlUtils().writeDocument(d, out, getXmlStyle().xmlEncoding());
-      msg.setCharEncoding(getXmlStyle().xmlEncoding());
+
     }
     catch (Exception e) {
       throw new ServiceException(e);

@@ -11,10 +11,10 @@ import static com.adaptris.core.poi.ExcelHelper.createCellName;
 import static com.adaptris.core.poi.ExcelHelper.getCellCount;
 import static com.adaptris.core.poi.ExcelHelper.getRowCount;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -28,7 +28,7 @@ class ExcelConverter {
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  public final Document convertToXml(HSSFWorkbook workbook, XmlStyle styleGuide) throws Exception {
+  public final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
     XmlUtils xmlUtils = new XmlUtils();
     Document document = (Document) XmlUtils.createDocument();
 
@@ -36,13 +36,13 @@ class ExcelConverter {
     Element rootElement = document.createElement(XML_ELEMENT_SPREADSHEET);
     document.appendChild(rootElement);
     for (int sheetCounter = 0; sheetCounter < workbook.getNumberOfSheets(); sheetCounter++) {
-      HSSFSheet sheet = workbook.getSheetAt(sheetCounter);
+      Sheet sheet = workbook.getSheetAt(sheetCounter);
       processWorksheet(sheet, rootElement, styleGuide);
     }
     return document;
   }
 
-  private void processWorksheet(HSSFSheet sheet, Element parent, XmlStyle styleGuide) throws Exception {
+  private void processWorksheet(Sheet sheet, Element parent, XmlStyle styleGuide) throws Exception {
     Document document = parent.getOwnerDocument();
     Element sheetElement = document.createElement(XML_ELEMENT_WORKSHEET);
     parent.appendChild(sheetElement);
@@ -57,7 +57,7 @@ class ExcelConverter {
     }
     // Now loop through and create each row.
     for (; rowCounter < nRows; rowCounter++) {
-      HSSFRow row = sheet.getRow(rowCounter);
+      Row row = sheet.getRow(rowCounter);
       if (row == null) {
         throw new Exception("Unable to get row " + (rowCounter + 1));
       }
@@ -65,7 +65,7 @@ class ExcelConverter {
     }
   }
 
-  private void processRow(HSSFRow row, Element parent, XmlStyle styleGuide, String[] columnNames) throws Exception {
+  private void processRow(Row row, Element parent, XmlStyle styleGuide, String[] columnNames) throws Exception {
     Document document = parent.getOwnerDocument();
     Element rowElement = document.createElement(XML_ELEMENT_ROW);
     parent.appendChild(rowElement);
@@ -75,10 +75,10 @@ class ExcelConverter {
       rowElement.setAttribute(XML_ATTR_ROW_NUMBER, String.valueOf(rowCounter));
     }
     for (int i = 0; i < columnNames.length; i++) {
-      log.trace("Creating element " + columnNames[i]);
+      log.trace("Creating element [" + columnNames[i] + "]");
       Element cellElement = document.createElement(columnNames[i]);
       rowElement.appendChild(cellElement);
-      HSSFCell cell = row.getCell(i);
+      Cell cell = row.getCell(i);
       CellHandler handler = ExcelHelper.getHandler(cell);
       String value = handler.getValue(cell, styleGuide);
       String type = handler.getType();
@@ -96,7 +96,7 @@ class ExcelConverter {
     }
   }
 
-  private String[] createColumnNames(HSSFSheet sheet, XmlStyle lf) {
+  private String[] createColumnNames(Sheet sheet, XmlStyle lf) {
     return lf.resolveNamingStrategy().createColumnNames(sheet, lf);
   }
 
