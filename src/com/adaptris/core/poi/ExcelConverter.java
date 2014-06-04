@@ -28,7 +28,7 @@ class ExcelConverter {
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  public final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
+  final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
     XmlUtils xmlUtils = new XmlUtils();
     Document document = (Document) XmlUtils.createDocument();
 
@@ -71,7 +71,7 @@ class ExcelConverter {
     parent.appendChild(rowElement);
     int rowCounter = row.getRowNum() + 1;
     log.trace("Processing row " + rowCounter);
-    if (styleGuide.getEmitRowNumberAttr()) {
+    if (styleGuide.emitRowNumberAttr()) {
       rowElement.setAttribute(XML_ATTR_ROW_NUMBER, String.valueOf(rowCounter));
     }
     for (int i = 0; i < columnNames.length; i++) {
@@ -84,11 +84,11 @@ class ExcelConverter {
       String type = handler.getType();
       log.trace("Cell(" + rowCounter + "," + (i + 1) + ") is a [" + type + "] and the computed value is [" + value + "]");
       // if showDataTypes is true, add the attribute to the xml node
-      if (styleGuide.getEmitDataTypeAttr()) {
+      if (styleGuide.emitDataTypeAttr()) {
         cellElement.setAttribute(XML_ATTR_TYPE, type);
       }
       // if showCellPosition is true, add the positional element to the XML (e.g. BB0).
-      if (styleGuide.getEmitCellPositionAttr()) {
+      if (styleGuide.emitCellPositionAttr()) {
         cellElement.setAttribute(XML_ATTR_POSITION, createCellName(i) + rowCounter);
       }
       // set the value of the xml node

@@ -16,7 +16,7 @@ import com.adaptris.util.GuidGenerator;
  * @author lchan
  * 
  */
-public class ExcelHelper {
+class ExcelHelper {
 
   static final String XML_ATTR_POSITION = "position";
 
@@ -50,7 +50,7 @@ public class ExcelHelper {
   // Obtuse use of enums as both an interface and factory...
   // Because the type handlers are very small classes, there's not much
   // point having an abstract class / interface and a bunch of separate implementations.
-  public enum CellHandler {
+  enum CellHandler {
     NUMERIC_CELL(XML_ATTR_TYPE_NUMERIC, Cell.CELL_TYPE_NUMERIC) {
       @Override
       public CellHandler getHandler(Cell cell) {
@@ -160,7 +160,7 @@ public class ExcelHelper {
     }
   };
 
-  protected static CellHandler getHandler(Cell cell) throws Exception {
+  static CellHandler getHandler(Cell cell) throws Exception {
     if (cell == null) {
       return CellHandler.BLANK_CELL;
     }
@@ -178,7 +178,7 @@ public class ExcelHelper {
     return handler;
   }
 
-  protected static int getRowCount(Sheet sheet) {
+  static int getRowCount(Sheet sheet) {
     int result = sheet.getLastRowNum();
     // 0 means 0 rows on the sheet, or one at position zero.
     if (result == 0) {
@@ -190,7 +190,7 @@ public class ExcelHelper {
     return result;
   }
 
-  protected static int getCellCount(Sheet sheet) {
+  static int getCellCount(Sheet sheet) {
     int result = 0;
     int highRow = getRowCount(sheet);
     for (int i = sheet.getFirstRowNum(); i < highRow; i++) {
@@ -202,7 +202,7 @@ public class ExcelHelper {
     return result;
   }
 
-  protected static String createCellName(final int cellNumber) {
+  static String createCellName(final int cellNumber) {
     String cellName = "";
     int len = ColumnCells.values().length;
     int cn = cellNumber;
@@ -219,7 +219,7 @@ public class ExcelHelper {
     return cellName;
   }
 
-  protected static String safeName(String input) {
+  static String safeName(String input) {
     String name = input;
     for (String invalid : INVALID_CHARS) {
       name = name.replaceAll(invalid, REPLACEMENT_VALUE);

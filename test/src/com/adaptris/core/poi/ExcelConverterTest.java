@@ -61,7 +61,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.SIMPLE.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.SIMPLE);
       style.setEmitRowNumberAttr(true);
       Document d = c.convertToXml(workbook, style);
       assertNotNull(d);
@@ -129,7 +129,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION);
       Document d = c.convertToXml(workbook, style);
       assertNotNull(d);
       XPath xp = new XPath();
@@ -147,7 +147,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION);
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);
       style.setEmitRowNumberAttr(true);
@@ -172,7 +172,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook =  WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW);
       style.setHeaderRow(5);
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);
@@ -197,7 +197,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW);
       Document d = c.convertToXml(workbook, style);
       assertNotNull(d);
       XPath xp = new XPath();
@@ -215,7 +215,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW);
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);
       style.setEmitRowNumberAttr(true);
@@ -240,7 +240,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW);
       style.setHeaderRow(5);
       Document d = c.convertToXml(workbook, style);
       assertNotNull(d);
@@ -259,7 +259,7 @@ public class ExcelConverterTest extends BaseCase {
     try {
       Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
-      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW);
       style.setHeaderRow(5);
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);

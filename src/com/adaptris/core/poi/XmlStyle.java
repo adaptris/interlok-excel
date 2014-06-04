@@ -11,9 +11,14 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import com.adaptris.annotation.AutoPopulated;
+import com.adaptris.core.AdaptrisMessage;
 
 /**
  * Controls the XML look and feel for ExcelToXml.
@@ -22,14 +27,18 @@ import org.apache.poi.ss.usermodel.Sheet;
  *
  */
 public class XmlStyle {
-  private boolean emitDataTypeAttr;
-  private boolean emitRowNumberAttr;
-  private boolean emitCellPositionAttr;
+  private Boolean emitDataTypeAttr;
+  private Boolean emitRowNumberAttr;
+  private Boolean emitCellPositionAttr;
+
+  @NotNull
+  @AutoPopulated
   private String dateFormat;
   private String numberFormat;
   private Integer headerRow;
 
-  private String elementNamingStyle;
+  @NotNull
+  private ElementNaming elementNamingStyle;
   private String xmlEncoding;
 
   private transient DateFormat dateFormatter = null;
@@ -77,12 +86,12 @@ public class XmlStyle {
   }
 
   public XmlStyle() {
-    setElementNamingStyle(ElementNaming.SIMPLE.name());
+    setElementNamingStyle(ElementNaming.SIMPLE);
     setXmlEncoding(null);
     setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
   }
 
-  public boolean getEmitDataTypeAttr() {
+  public Boolean getEmitDataTypeAttr() {
     return emitDataTypeAttr;
   }
 
@@ -92,11 +101,16 @@ public class XmlStyle {
    *
    * @param b true or false, default false.
    */
-  public void setEmitDataTypeAttr(boolean b) {
+  public void setEmitDataTypeAttr(Boolean b) {
     emitDataTypeAttr = b;
   }
 
-  public boolean getEmitRowNumberAttr() {
+
+  boolean emitDataTypeAttr() {
+    return getEmitDataTypeAttr() != null ? getEmitDataTypeAttr().booleanValue() : false;
+  }
+
+  public Boolean getEmitRowNumberAttr() {
     return emitRowNumberAttr;
   }
 
@@ -105,11 +119,15 @@ public class XmlStyle {
    *
    * @param b true or false, default false
    */
-  public void setEmitRowNumberAttr(boolean b) {
+  public void setEmitRowNumberAttr(Boolean b) {
     emitRowNumberAttr = b;
   }
 
-  public boolean getEmitCellPositionAttr() {
+  boolean emitRowNumberAttr() {
+    return getEmitRowNumberAttr() != null ? getEmitRowNumberAttr().booleanValue() : false;
+  }
+
+  public Boolean getEmitCellPositionAttr() {
     return emitCellPositionAttr;
   }
 
@@ -118,8 +136,12 @@ public class XmlStyle {
    *
    * @param b true or false, default false
    */
-  public void setEmitCellPositionAttr(boolean b) {
+  public void setEmitCellPositionAttr(Boolean b) {
     emitCellPositionAttr = b;
+  }
+
+  boolean emitCellPositionAttr() {
+    return getEmitCellPositionAttr() != null ? getEmitCellPositionAttr().booleanValue() : false;
   }
 
   public String getDateFormat() {
@@ -136,35 +158,28 @@ public class XmlStyle {
   }
 
 
-  protected String format(Date d) {
+  String format(Date d) {
     if (dateFormatter == null) {
       dateFormatter = new SimpleDateFormat(getDateFormat());
     }
     return dateFormatter.format(d);
   }
 
-  protected ElementNaming resolveNamingStrategy() {
-    ElementNaming result = ElementNaming.SIMPLE;
-    for (ElementNaming ns : ElementNaming.values()) {
-      if (ns.name().equalsIgnoreCase(getElementNamingStyle())) {
-        result = ns;
-        break;
-      }
-    }
-    return result;
+  ElementNaming resolveNamingStrategy() {
+    return getElementNamingStyle() != null ? getElementNamingStyle() : ElementNaming.SIMPLE;
   }
 
-  public String getElementNamingStyle() {
+  public ElementNaming getElementNamingStyle() {
     return elementNamingStyle;
   }
 
   /**
    * Set how element names are generated
-   *
-   * @param s the style; one of SIMPLE, CELL_POSITION, HEADER_ROW. Default is 'null' which is equivalent to SIMPLE
+   * 
+   * @param s the style; one of SIMPLE, CELL_POSITION, HEADER_ROW. Default is SIMPLE
    * @see ElementNaming
    */
-  public void setElementNamingStyle(String s) {
+  public void setElementNamingStyle(ElementNaming s) {
     elementNamingStyle = s;
   }
 
@@ -173,16 +188,32 @@ public class XmlStyle {
   }
 
   /**
-   * Set the XML Encoding for the document.
-   *
-   * @param encoding the encoding; default is null which implies <code>System.getProperty("file.encoding")</code>
+   * Set the encoding for the resulting XML document.
+   * <p>
+   * If not specified the following rules will be applied:
+   * </p>
+   * <ol>
+   * <li>If the {@link AdaptrisMessage#getCharEncoding()} is non-null then that will be used.</li>
+   * <li>The platform String encoding style is used (e.g. cp1252 on Windows, UTF-8 on RHEL5) - this is generally derived from the
+   * global system property <code>file.encoding</code></li>
+   * </ol>
+   * <p>
+   * As a result; the character encoding on the message is always set using {@link AdaptrisMessage#setCharEncoding(String)}.
+   * </p>
    */
   public void setXmlEncoding(String encoding) {
     xmlEncoding = encoding;
   }
 
-  protected String xmlEncoding() {
-    return getXmlEncoding() != null ? getXmlEncoding() : System.getProperty("file.encoding");
+  String evaluateEncoding(AdaptrisMessage msg) {
+    String encoding = System.getProperty("file.encoding");
+    if (!isEmpty(getXmlEncoding())) {
+      encoding = getXmlEncoding();
+    }
+    else if (!isEmpty(msg.getCharEncoding())) {
+      encoding = msg.getCharEncoding();
+    }
+    return encoding;
   }
 
   public String getNumberFormat() {
@@ -191,14 +222,15 @@ public class XmlStyle {
 
   /**
    * Set the format for numeric fields
-   *
+   * 
+   * @see DecimalFormat
    * @param s the format; default is null, which means to use {@link String#valueOf(double)}
    */
   public void setNumberFormat(String s) {
     numberFormat = s;
   }
 
-  protected String format(double d) {
+  String format(double d) {
     if (Double.isNaN(d)) {
       throw new IllegalArgumentException("Not a double");
     }

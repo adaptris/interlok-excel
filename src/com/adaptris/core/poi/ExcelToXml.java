@@ -5,7 +5,6 @@ import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.util.IOUtils;
 import org.w3c.dom.Document;
 
 import com.adaptris.core.AdaptrisMessage;
@@ -38,25 +37,23 @@ public class ExcelToXml extends ServiceImp {
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     Workbook workbook = null;
-    InputStream in = null;
-    OutputStream out = null;
     ExcelConverter converter = new ExcelConverter();
-    try {
-      in = msg.getInputStream();
-      out = msg.getOutputStream();
+    try (InputStream in = msg.getInputStream()) {
       workbook = WorkbookFactory.create(in);
       Document d = converter.convertToXml(workbook, getXmlStyle());
-      new XmlUtils().writeDocument(d, out, getXmlStyle().xmlEncoding());
-
+      writeXmlDocument(d, msg);
     }
     catch (Exception e) {
       throw new ServiceException(e);
     }
-    finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(out);
-    }
+  }
 
+  protected void writeXmlDocument(Document doc, AdaptrisMessage msg) throws Exception {
+    try (OutputStream out = msg.getOutputStream()) {
+      String encoding = getXmlStyle().evaluateEncoding(msg);
+      new XmlUtils().writeDocument(doc, out, encoding);
+      msg.setCharEncoding(encoding);
+    }
   }
 
   @Override
