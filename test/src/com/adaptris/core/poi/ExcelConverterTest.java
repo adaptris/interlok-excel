@@ -7,8 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
 import org.w3c.dom.Document;
 
@@ -20,6 +20,7 @@ public class ExcelConverterTest extends BaseCase {
   public static final String TMP_DIR_KEY = "tmp.dir";
   public static final String KEY_SAMPLE_INPUT = "poi.sample.input";
   public static final String KEY_SAMPLE_INPUT_WITH_HEADER = "poi.sample.input.header";
+  public static final String KEY_SAMPLE_XLSX_INPUT_WITH_HEADER = "poi.sample.xlsx.header";
   
   public ExcelConverterTest(String name) {
     super(name);
@@ -39,7 +40,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       Document d = c.convertToXml(workbook, new XmlStyle());
       assertNotNull(d);
       new XmlUtils().writeDocument(d, System.err);
@@ -58,7 +59,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.SIMPLE.name());
       style.setEmitRowNumberAttr(true);
@@ -78,7 +79,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);
@@ -102,7 +103,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setEmitCellPositionAttr(true);
       style.setEmitDataTypeAttr(true);
@@ -126,7 +127,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION.name());
       Document d = c.convertToXml(workbook, style);
@@ -144,7 +145,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.CELL_POSITION.name());
       style.setEmitCellPositionAttr(true);
@@ -165,11 +166,36 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  public void testHeaderRowConversion_XLSX() throws Exception {
+    ExcelConverter c = new ExcelConverter();
+    InputStream in = createFromProperty(KEY_SAMPLE_XLSX_INPUT_WITH_HEADER);
+    try {
+      Workbook workbook =  WorkbookFactory.create(in);
+      XmlStyle style = new XmlStyle();
+      style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
+      style.setHeaderRow(5);
+      style.setEmitCellPositionAttr(true);
+      style.setEmitDataTypeAttr(true);
+      style.setEmitRowNumberAttr(true);
+
+      Document d = c.convertToXml(workbook, style);
+      assertNotNull(d);
+      XPath xp = new XPath();
+      assertNotNull(xp.selectSingleNode(d, "/spreadsheet/sheet[@name='Source Data']"));
+      assertTrue(xp.selectNodeList(d, "/spreadsheet/sheet[@name='Source Data']/row/Project_Name").getLength() > 0);
+      // This checks that formulas are being calculated.
+      assertEquals("12300.0", xp.selectSingleTextItem(d, "/spreadsheet/sheet[@name='Source Data']/row[@number='6']/Estimated_Days"));
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
+
   public void testHeaderRowConversion() throws Exception {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
       Document d = c.convertToXml(workbook, style);
@@ -187,7 +213,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
       style.setEmitCellPositionAttr(true);
@@ -212,7 +238,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
       style.setHeaderRow(5);
@@ -231,7 +257,7 @@ public class ExcelConverterTest extends BaseCase {
     ExcelConverter c = new ExcelConverter();
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
     try {
-      HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(in));
+      Workbook workbook = WorkbookFactory.create(in);
       XmlStyle style = new XmlStyle();
       style.setElementNamingStyle(XmlStyle.ElementNaming.HEADER_ROW.name());
       style.setHeaderRow(5);
