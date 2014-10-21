@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,7 +25,11 @@ import com.adaptris.util.XmlUtils;
 
 class ExcelConverter {
 
-  private Logger log = LoggerFactory.getLogger(this.getClass());
+  private Logger log;
+
+  ExcelConverter(Logger log) {
+    this.log = log;
+  }
 
   final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
     XmlUtils xmlUtils = new XmlUtils();

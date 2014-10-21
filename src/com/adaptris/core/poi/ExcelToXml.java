@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.adaptris.core.AdaptrisMessage;
@@ -37,7 +38,7 @@ public class ExcelToXml extends ServiceImp {
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     Workbook workbook = null;
-    ExcelConverter converter = new ExcelConverter();
+    ExcelConverter converter = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
     try (InputStream in = msg.getInputStream()) {
       workbook = WorkbookFactory.create(in);
       Document d = converter.convertToXml(workbook, getXmlStyle());
