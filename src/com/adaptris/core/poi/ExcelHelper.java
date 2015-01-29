@@ -1,5 +1,6 @@
 package com.adaptris.core.poi;
 
+import static org.apache.commons.lang.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -8,6 +9,7 @@ import org.apache.poi.ss.usermodel.FormulaError;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.adaptris.core.util.XmlHelper;
 import com.adaptris.util.GuidGenerator;
 
 /**
@@ -220,12 +222,14 @@ class ExcelHelper {
   }
 
   static String safeName(String input) {
-    String name = input;
-    for (String invalid : INVALID_CHARS) {
-      name = name.replaceAll(invalid, REPLACEMENT_VALUE);
-    }
+    String name = XmlHelper.stripIllegalXmlCharacters(defaultIfBlank(input, ""));
     if (isEmpty(name)) {
       name = "blank_" + guid.safeUUID();
+    }
+    else {
+      for (String invalid : INVALID_CHARS) {
+        name = name.replaceAll(invalid, REPLACEMENT_VALUE);
+      }
     }
     return name;
   }
