@@ -10,6 +10,7 @@ import java.io.InputStream;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
@@ -20,6 +21,7 @@ import com.adaptris.util.text.xml.XPath;
 public class ExcelConverterTest extends BaseCase {
   public static final String TMP_DIR_KEY = "tmp.dir";
   public static final String KEY_SAMPLE_INPUT = "poi.sample.input";
+  public static final String KEY_SAMPLE_INPUT_WITH_NULL = "poi.sample.input.null";
   public static final String KEY_SAMPLE_INPUT_WITH_HEADER = "poi.sample.input.header";
   public static final String KEY_SAMPLE_XLSX_INPUT_WITH_HEADER = "poi.sample.xlsx.header";
   
@@ -38,7 +40,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testDefaultConversion() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -55,9 +57,42 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  public void testConversion_NullRow_IgnoreNullRowFalse() throws Exception {
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
+    InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_NULL);
+    try {
+      Workbook workbook = WorkbookFactory.create(in);
+      Document d = c.convertToXml(workbook, new XmlStyle());
+      fail("Conversion Succeeded with Null Row");
+    }
+    catch (Exception e) {
+      assertTrue(e.getMessage().matches("Unable to process.*it's null"));
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
+
+  public void testConversion_NullRow_IgnoreNullRow() throws Exception {
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(true));
+    InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_NULL);
+    try {
+      Workbook workbook = WorkbookFactory.create(in);
+      Document d = c.convertToXml(workbook, new XmlStyle());
+      assertNotNull(d);
+      new XmlUtils().writeDocument(d, System.err);
+      XPath xp = new XPath();
+      assertNotNull(xp.selectSingleNode(d, "/spreadsheet/sheet[@name='Sheet1']"));
+      assertTrue(xp.selectNodeList(d, "/spreadsheet/sheet[@name='Sheet1']/row/cell").getLength() > 0);
+      assertNull(xp.selectSingleNode(d, "/spreadsheet/sheet[@name='Sheet1']/row/cell[@position='A1']"));
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
 
   public void testSimpleConversion_emitRow() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -77,7 +112,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testSimpleConversion_emitAllAttributes_WithNumberFormat() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -101,7 +136,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testSimpleConversion_emitAllAttributes() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -125,7 +160,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testPositionalConversion() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -143,7 +178,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testPositionalConversion_emitAllAttributes() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -168,7 +203,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testHeaderRowConversion_XLSX() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_XLSX_INPUT_WITH_HEADER);
     try {
       Workbook workbook =  WorkbookFactory.create(in);
@@ -193,7 +228,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testHeaderRowConversion() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -211,7 +246,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testHeaderRowConversion_emitAllAttributes() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -236,7 +271,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testHeaderRowConversion_Offset() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -255,7 +290,7 @@ public class ExcelConverterTest extends BaseCase {
   }
 
   public void testHeaderRowConversion_Offset_EmitAllAttributes() throws Exception {
-    ExcelConverter c = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
     try {
       Workbook workbook = WorkbookFactory.create(in);
@@ -286,4 +321,22 @@ public class ExcelConverterTest extends BaseCase {
     return new FileInputStream(f);
   }
 
+  private class BasicExcelConverterContext implements ExcelConverter.ExcelConverterContext {
+
+    private transient boolean ignoreNulls;
+
+    private BasicExcelConverterContext(boolean b) {
+      ignoreNulls = b;
+    }
+    @Override
+    public boolean ignoreNullRows() {
+      return ignoreNulls;
+    }
+
+    @Override
+    public Logger logger() {
+      return LoggerFactory.getLogger(ExcelConverterTest.class);
+    }
+
+  }
 }

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
@@ -27,8 +28,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 
  */
 @XStreamAlias("excel-to-xml-service")
-public class ExcelToXml extends ServiceImp {
+public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConverterContext {
   private XmlStyle xmlStyle;
+  private Boolean ignoreNullRows;
 
   public ExcelToXml() {
     setXmlStyle(new XmlStyle());
@@ -38,7 +40,7 @@ public class ExcelToXml extends ServiceImp {
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     Workbook workbook = null;
-    ExcelConverter converter = new ExcelConverter(LoggerFactory.getLogger(this.getClass()));
+    ExcelConverter converter = new ExcelConverter(this);
     try (InputStream in = msg.getInputStream()) {
       workbook = WorkbookFactory.create(in);
       Document d = converter.convertToXml(workbook, getXmlStyle());
@@ -87,6 +89,31 @@ public class ExcelToXml extends ServiceImp {
   public boolean isEnabled(License license) throws CoreException {
     return license.isEnabled(LicenseType.Standard);
   }
+
+  public Boolean getIgnoreNullRows() {
+    return ignoreNullRows;
+  }
+
+  /**
+   * Set to true to ignore null rows.
+   * <p>
+   * In some spreadsheets it is possible to get a null Row object when doing {@code Row row = sheet.getRow(i)}. Set this to be true
+   * to silently ignore errors, which means you may a mismatch between the number of rows in the spreadsheet vs the number of Row
+   * elements in the resulting XML.
+   * </p>
+   * 
+   * @param b true to ignore rows that are null; default null (false).
+   */
+  public void setIgnoreNullRows(Boolean b) {
+    this.ignoreNullRows = b;
+  }
   
+  public boolean ignoreNullRows() {
+    return getIgnoreNullRows() != null ? getIgnoreNullRows().booleanValue() : false;
+  }
+
+  public Logger logger() {
+    return LoggerFactory.getLogger(ExcelToXml.class);
+  }
 
 }

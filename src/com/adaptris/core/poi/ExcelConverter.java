@@ -25,17 +25,22 @@ import com.adaptris.util.XmlUtils;
 
 class ExcelConverter {
 
-  private Logger log;
+  interface ExcelConverterContext {
+    boolean ignoreNullRows();
+    Logger logger();
+  }
 
-  ExcelConverter(Logger log) {
-    this.log = log;
+  private transient ExcelConverterContext context;
+
+  ExcelConverter(ExcelConverterContext context) {
+    this.context = context;
   }
 
   final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
     XmlUtils xmlUtils = new XmlUtils();
     Document document = (Document) XmlUtils.createDocument();
 
-    log.trace("workbook has " + workbook.getNumberOfSheets() + " sheets");
+    context.logger().trace("workbook has {} sheets", workbook.getNumberOfSheets());
     Element rootElement = document.createElement(XML_ELEMENT_SPREADSHEET);
     document.appendChild(rootElement);
     for (int sheetCounter = 0; sheetCounter < workbook.getNumberOfSheets(); sheetCounter++) {
@@ -52,7 +57,7 @@ class ExcelConverter {
     sheetElement.setAttribute(XML_ATTR_SHEET_NAME, sheet.getSheetName());
     int nRows = getRowCount(sheet);
     int nCells = getCellCount(sheet);
-    log.trace("Sheet " + sheet.getSheetName() + " has " + nRows + " rows with " + nCells + " cells");
+    context.logger().trace("Sheet {} has {} rows with {} cells", sheet.getSheetName(), nRows, nCells);
     int rowCounter = sheet.getFirstRowNum();
     String[] columnNames = createColumnNames(sheet, styleGuide);
     if (styleGuide.resolveNamingStrategy() == ElementNaming.HEADER_ROW) {
@@ -62,9 +67,13 @@ class ExcelConverter {
     for (; rowCounter < nRows; rowCounter++) {
       Row row = sheet.getRow(rowCounter);
       if (row == null) {
-        throw new Exception("Unable to get row " + (rowCounter + 1));
+        if (!context.ignoreNullRows()) {
+          throw new Exception("Unable to process row " + (rowCounter + 1) + "; it's null");
+        }
       }
-      processRow(row, sheetElement, styleGuide, columnNames);
+      else {
+        processRow(row, sheetElement, styleGuide, columnNames);
+      }
     }
   }
 
@@ -73,19 +82,19 @@ class ExcelConverter {
     Element rowElement = document.createElement(XML_ELEMENT_ROW);
     parent.appendChild(rowElement);
     int rowCounter = row.getRowNum() + 1;
-    log.trace("Processing row " + rowCounter);
+    context.logger().trace("Processing row {}", rowCounter);
     if (styleGuide.emitRowNumberAttr()) {
       rowElement.setAttribute(XML_ATTR_ROW_NUMBER, String.valueOf(rowCounter));
     }
     for (int i = 0; i < columnNames.length; i++) {
-      log.trace("Creating element [" + columnNames[i] + "]");
+      context.logger().trace("Creating element [{}]", columnNames[i]);
       Element cellElement = document.createElement(columnNames[i]);
       rowElement.appendChild(cellElement);
       Cell cell = row.getCell(i);
       CellHandler handler = ExcelHelper.getHandler(cell);
       String value = handler.getValue(cell, styleGuide);
       String type = handler.getType();
-      log.trace("Cell(" + rowCounter + "," + (i + 1) + ") is a [" + type + "] and the computed value is [" + value + "]");
+      context.logger().trace("Cell ({},{}) is a [{}] and the computed value is [{}]", rowCounter, (i+1), type, value);
       // if showDataTypes is true, add the attribute to the xml node
       if (styleGuide.emitDataTypeAttr()) {
         cellElement.setAttribute(XML_ATTR_TYPE, type);

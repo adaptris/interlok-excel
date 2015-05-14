@@ -7,6 +7,7 @@ junit.SampleConfigCase.baseDir=${build.dir}/example-xml
 
 junit.tmp.dir=${build.dir}/tmp
 junit.poi.sample.input=${test.resources.dir}/sample-input.xls
+junit.poi.sample.input.null=${test.resources.dir}/null-row-input.xls
 junit.poi.sample.input.header=${test.resources.dir}/test-input-header-row.xls
 junit.poi.sample.xlsx.header=${test.resources.dir}/test-input-header-row_2.xlsx
 junit.test.classes=**/**/**/**/*Test*.java
