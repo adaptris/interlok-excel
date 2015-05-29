@@ -103,6 +103,7 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
    * </p>
    * 
    * @param b true to ignore rows that are null; default null (false).
+   * @since 3.0.3
    */
   public void setIgnoreNullRows(Boolean b) {
     this.ignoreNullRows = b;
