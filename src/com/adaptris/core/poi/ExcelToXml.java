@@ -14,8 +14,6 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.adaptris.util.XmlUtils;
-import com.adaptris.util.license.License;
-import com.adaptris.util.license.License.LicenseType;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 
@@ -60,11 +58,11 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   }
 
   @Override
-  public void init() throws CoreException {
+  public void initService() throws CoreException {
   }
 
   @Override
-  public void close() {
+  public void closeService() {
   }
 
   @Override
@@ -83,11 +81,6 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
 
   public void setXmlStyle(XmlStyle style) {
     xmlStyle = style;
-  }
-
-  @Override
-  public boolean isEnabled(License license) throws CoreException {
-    return license.isEnabled(LicenseType.Standard);
   }
 
   public Boolean getIgnoreNullRows() {
@@ -116,5 +109,9 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   public Logger logger() {
     return LoggerFactory.getLogger(ExcelToXml.class);
   }
+
+
+  @Override
+  public void prepare() throws CoreException {}
 
 }
