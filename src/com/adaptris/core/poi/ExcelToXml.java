@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.adaptris.annotation.AdapterComponent;
+import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.ServiceException;
@@ -26,6 +28,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 
  */
 @XStreamAlias("excel-to-xml-service")
+@AdapterComponent
+@ComponentProfile(summary = "Convert an Excel Spreadsheet to XML", tag = "service,transform,excel,xml")
 public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConverterContext {
   private XmlStyle xmlStyle;
   private Boolean ignoreNullRows;
