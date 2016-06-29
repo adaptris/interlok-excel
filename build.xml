@@ -5,7 +5,7 @@
 
   <property file="build.properties"/>
   <property file="ivy.properties"/>
-  <import file="${basedir}/../resources/ant-ivy-includes.xml"/>
+  <import file="${basedir}/ivy/ant-ivy-includes.xml"/>
 
   <tstamp>
     <format property="today" pattern="yyyy-MM-dd" locale="en"/>
