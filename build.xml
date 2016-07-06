@@ -13,8 +13,8 @@
 
   <target name="init" description="Initialisation">
 
-    <property name="ivy.publish.revision" value="3.3-SNAPSHOT"/>  <!-- Version number of this artifact -->
-    <property name="adp-core-version" value="3.3-SNAPSHOT"/>
+    <property name="ivy.publish.revision" value="3.4-SNAPSHOT"/>  <!-- Version number of this artifact -->
+    <property name="adp-core-version" value="3.4-SNAPSHOT"/>
     <property name="manifest.title" value="Interlok/Excel (POI) integration"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
 
