@@ -5,7 +5,7 @@
 
   <property file="build.properties"/>
   <property file="ivy.properties"/>
-  <import file="${basedir}/../resources/ant-ivy-includes.xml"/>
+  <import file="${basedir}/ivy/ant-ivy-includes.xml"/>
 
   <tstamp>
     <format property="today" pattern="yyyy-MM-dd" locale="en"/>
@@ -13,8 +13,8 @@
 
   <target name="init" description="Initialisation">
 
-    <property name="ivy.publish.revision" value="3.3-SNAPSHOT"/>  <!-- Version number of this artifact -->
-    <property name="adp-core-version" value="3.3-SNAPSHOT"/>
+    <property name="ivy.publish.revision" value="3.4-SNAPSHOT"/>  <!-- Version number of this artifact -->
+    <property name="adp-core-version" value="3.4-SNAPSHOT"/>
     <property name="manifest.title" value="Interlok/Excel (POI) integration"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
 
