@@ -23,6 +23,7 @@
     <property name="project.dir" value = "${basedir}"/>
     <property name="project.resources" value="${resources.dir}"/>
     <property name="project.jar.name" value = "${project.name}.jar"/>
+    <property name="project.pom.description" value="${manifest.title}"/>
     <property name="example.xml.dir" value="${build.dir}/example-xml"/>
 
     <property name="src.dir" value="${basedir}/src"/>
@@ -44,9 +45,7 @@
     <property name="javac.include.classes"  value="**/*.java" />
     <property name="junit.test.classes"     value="**/*Test*.java" />
 
-	<property name="build.tmp.dir" value="${build.dir}/tmp"/>
-
-    <property name="project.jar.name" value = "${project.name}.jar"/>
+    <property name="build.tmp.dir" value="${build.dir}/tmp"/>
 
     <property name="tmp.jar.name" value = "${project.name}-tmp.jar"/>
     <property name="yguard.report" value="${build.dir}/${project.name}-${jar.version}.yguard.xml.gz"/>
