@@ -13,6 +13,7 @@
   <property name="thirdparty-snapshots" value="${nexus-base-url}/nexus/content/groups/thirdparty-snapshots/" override="false"/>
   <property name="nexus-private-snapshots" value="${nexus-base-url}/nexus/content/repositories/adaptris-private-snapshots/" override="false"/>
   <property name="nexus-private-releases" value="${nexus-base-url}/nexus/content/repositories/adaptris-private-releases/" override="false"/>
+  <property name="default.ivy.repo" value="https://repo1.maven.org/maven2/" override="false"/>
  
   <resolvers>
 
