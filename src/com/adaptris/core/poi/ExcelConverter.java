@@ -38,7 +38,6 @@ class ExcelConverter {
   }
 
   final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
-    XmlUtils xmlUtils = new XmlUtils();
     Document document = createDocument();
 
     context.logger().trace("workbook has {} sheets", workbook.getNumberOfSheets());
