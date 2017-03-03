@@ -11,6 +11,8 @@ import static com.adaptris.core.poi.ExcelHelper.createCellName;
 import static com.adaptris.core.poi.ExcelHelper.getCellCount;
 import static com.adaptris.core.poi.ExcelHelper.getRowCount;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,7 +23,6 @@ import org.w3c.dom.Element;
 
 import com.adaptris.core.poi.ExcelHelper.CellHandler;
 import com.adaptris.core.poi.XmlStyle.ElementNaming;
-import com.adaptris.util.XmlUtils;
 
 class ExcelConverter {
 
@@ -37,8 +38,7 @@ class ExcelConverter {
   }
 
   final Document convertToXml(Workbook workbook, XmlStyle styleGuide) throws Exception {
-    XmlUtils xmlUtils = new XmlUtils();
-    Document document = (Document) XmlUtils.createDocument();
+    Document document = createDocument();
 
     context.logger().trace("workbook has {} sheets", workbook.getNumberOfSheets());
     Element rootElement = document.createElement(XML_ELEMENT_SPREADSHEET);
@@ -112,5 +112,9 @@ class ExcelConverter {
     return lf.resolveNamingStrategy().createColumnNames(sheet, lf);
   }
 
+  public static Document createDocument() throws Exception {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    return dbf.newDocumentBuilder().newDocument();
+  }
 
 }
