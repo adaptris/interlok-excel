@@ -20,8 +20,8 @@
   <publications>
     <artifact name="adp-poi" type="jar" ext="jar"/>
     <artifact name="adp-poi" type="pom" ext="pom"/>
-    <artifact name="adp-poi-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
-    <artifact name="adp-poi-examples" type="examples" ext="zip" conf="examples"/>
+
+
      <artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
      <artifact type="examples" ext="jar" conf="examples" m:classifier="examples"/>
   </publications>
