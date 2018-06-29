@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="com.adaptris" module="adp-poi" revision="${ivy.publish.revision}"/>
+  <info organisation="com.adaptris" module="interlok-excel" revision="${ivy.publish.revision}"/>
   <configurations>
     <conf name="default" visibility="public" description="runtime dependencies and master artifact can be used with this conf" extends="runtime,master"/>
     <conf name="master" visibility="public" description="contains only the artifact published by this module itself, with no transitive dependencies"/>
@@ -18,18 +18,18 @@
 
   </configurations>
   <publications>
-    <artifact name="adp-poi" type="jar" ext="jar"/>
-    <artifact name="adp-poi" type="pom" ext="pom"/>
+    <artifact name="interlok-excel" type="jar" ext="jar"/>
+    <artifact name="interlok-excel" type="pom" ext="pom"/>
 
 
      <artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
      <artifact type="examples" ext="jar" conf="examples" m:classifier="examples"/>
   </publications>
   <dependencies>
-    <dependency org="com.adaptris" name="adp-core" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
-    <dependency org="com.adaptris" name="interlok-common" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
-    <dependency org="com.adaptris" name="adp-stubs" rev="${adp-core-version}" changing="true" conf="test->default"/>
-    <dependency org="com.adaptris" name="adp-core-apt" rev="${adp-core-version}" conf="compile->default;ant->default" changing="true"/>
+    <dependency org="com.adaptris" name="interlok-core" rev="${interlok-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
+    <dependency org="com.adaptris" name="interlok-common" rev="${interlok-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
+    <dependency org="com.adaptris" name="interlok-stubs" rev="${interlok-core-version}" changing="true" conf="test->default"/>
+    <dependency org="com.adaptris" name="interlok-core-apt" rev="${interlok-core-version}" conf="compile->default;ant->default" changing="true"/>
 
     <dependency org="org.apache.poi" name="poi" rev="3.10-FINAL" conf="compile->default"/>
     <dependency org="org.apache.poi" name="poi-ooxml" rev="3.10-FINAL" conf="compile->default"/>
