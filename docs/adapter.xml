@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE adapter [
-  <!ENTITY ADAPTER_UNIQUE_ID 'adp-poi'>
+  <!ENTITY ADAPTER_UNIQUE_ID 'interlok-poi'>
   <!ENTITY ADAPTER_FS_ROOT 'file:./fs'>
   <!ENTITY FS_CONSUME_DIR  'fs-consume'>
   <!ENTITY FS_PRODUCE_DIR  'fs-produce'>

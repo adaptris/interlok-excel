@@ -1,7 +1,7 @@
 <!--
 
 -->
-<project basedir="." default="dist" name="poi" xmlns:adapter="uri:adapter" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project basedir="." default="dist" name="excel" xmlns:adapter="uri:adapter" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property file="build.properties"/>
   <property file="ivy.properties"/>
@@ -13,13 +13,13 @@
 
   <target name="init" description="Initialisation">
 
-    <property name="ivy.publish.revision" value="3.7-SNAPSHOT"/>  <!-- Version number of this artifact -->
-    <property name="adp-core-version" value="3.7-SNAPSHOT"/>
+    <property name="ivy.publish.revision" value="3.8-SNAPSHOT"/>  <!-- Version number of this artifact -->
+    <property name="interlok-core-version" value="3.8-SNAPSHOT"/>
     <property name="manifest.title" value="Interlok/Excel (POI) integration"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
 
     <property name="project.dist.dir" value="${build.dir}/dist"/>
-    <property name="project.name" value = "adp-${ant.project.name}"/>
+    <property name="project.name" value = "interlok-${ant.project.name}"/>
     <property name="project.dir" value = "${basedir}"/>
     <property name="project.resources" value="${resources.dir}"/>
     <property name="project.jar.name" value = "${project.name}.jar"/>
