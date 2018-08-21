@@ -97,7 +97,7 @@ dependencies {
   compile ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile ("org.apache.poi:poi:3.10-FINAL")
-  compile ("org.apache.poi:poi-ooxml:3.10-FINAL")
+  compile ("org.apache.poi:poi-ooxml:3.17")
 
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
