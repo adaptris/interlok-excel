@@ -1,0 +1,6 @@
+SampleConfigCase.baseDir=@BUILD_DIR@/examples
+tmp.dir=@BUILD_DIR@/tmp
+poi.sample.input=@BASE_DIR@/src/test/resources/sample-input.xls
+poi.sample.input.null=@BASE_DIR@/src/test/resources/null-row-input.xls
+poi.sample.input.header=@BASE_DIR@/src/test/resources/test-input-header-row.xls
+poi.sample.xlsx.header=@BASE_DIR@/src/test/resources/test-input-header-row_2.xlsx
