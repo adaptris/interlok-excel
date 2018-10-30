@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.ServiceCase;
+import com.adaptris.core.util.DocumentBuilderFactoryBuilder;
 import com.adaptris.core.util.XmlHelper;
 import com.adaptris.util.text.xml.XPath;
 
@@ -34,17 +35,10 @@ public class PoiServiceTest extends ServiceCase {
   }
   
   protected static byte[] readFile(String path) throws IOException {
-    InputStream in = null;
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try {
-      in = new FileInputStream(new File(path));
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream(); InputStream in = new FileInputStream(new File(path))){
       IOUtils.copy(in, out);
+      return out.toByteArray();      
     }
-    finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(out);
-    }
-    return out.toByteArray();
   }
   
   public void testService() throws Exception {
@@ -54,7 +48,7 @@ public class PoiServiceTest extends ServiceCase {
     try {
       start(service);
       service.doService(msg);
-      Document d = XmlHelper.createDocument(msg);
+      Document d = XmlHelper.createDocument(msg, DocumentBuilderFactoryBuilder.newInstance());
       XPath xp = new XPath();
       assertNotNull(xp.selectSingleNode(d, "/spreadsheet/sheet[@name='Sheet1']"));
       assertTrue(xp.selectNodeList(d, "/spreadsheet/sheet[@name='Sheet1']/row/cell").getLength() > 0);

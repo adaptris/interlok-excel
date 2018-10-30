@@ -1,6 +1,8 @@
 package com.adaptris.core.poi;
 
+import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaError;
 import org.apache.poi.ss.usermodel.Row;
@@ -50,7 +52,7 @@ class ExcelHelper {
   // Because the type handlers are very small classes, there's not much
   // point having an abstract class / interface and a bunch of separate implementations.
   enum CellHandler {
-    NUMERIC_CELL(XML_ATTR_TYPE_NUMERIC, Cell.CELL_TYPE_NUMERIC) {
+    NUMERIC_CELL(XML_ATTR_TYPE_NUMERIC, CellType.NUMERIC) {
       @Override
       public CellHandler getHandler(Cell cell) {
         if (myCellType == cell.getCellType()) {
@@ -67,7 +69,7 @@ class ExcelHelper {
         return style.format(cell.getNumericCellValue());
       }
     },
-    FORMULA_CELL(XML_ATTR_TYPE_FORMULA, Cell.CELL_TYPE_FORMULA) {
+    FORMULA_CELL(XML_ATTR_TYPE_FORMULA, CellType.FORMULA) {
       @Override
       public CellHandler getHandler(Cell cell) {
         if (myCellType == cell.getCellType()) {
@@ -103,20 +105,20 @@ class ExcelHelper {
       }
     },
     // Use -1 to represent the type as it isn't really a type, it's just formatting type.
-    DATE_CELL(XML_ATTR_TYPE_DATE, -1) {
+    DATE_CELL(XML_ATTR_TYPE_DATE, null) {
       @Override
       public String getValue(Cell cell, XmlStyle style) {
         return style.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
       }
     },
-    STRING_CELL(XML_ATTR_TYPE_STRING, Cell.CELL_TYPE_STRING) {
+    STRING_CELL(XML_ATTR_TYPE_STRING, CellType.STRING) {
       @Override
       public String getValue(Cell cell, XmlStyle style) {
         return cell.getRichStringCellValue().getString();
       }
 
     },
-    BOOLEAN_CELL(XML_ATTR_TYPE_BOOLEAN, Cell.CELL_TYPE_BOOLEAN) {
+    BOOLEAN_CELL(XML_ATTR_TYPE_BOOLEAN, CellType.BOOLEAN) {
 
       @Override
       public String getValue(Cell cell, XmlStyle style) {
@@ -124,13 +126,13 @@ class ExcelHelper {
       }
 
     },
-    ERROR_CELL(XML_ATTR_TYPE_ERROR, Cell.CELL_TYPE_ERROR) {
+    ERROR_CELL(XML_ATTR_TYPE_ERROR, CellType.ERROR) {
       @Override
       public String getValue(Cell cell, XmlStyle style) {
         return String.valueOf(cell.getErrorCellValue());
       }
     },
-    BLANK_CELL(XML_ATTR_TYPE_BLANK, Cell.CELL_TYPE_BLANK) {
+    BLANK_CELL(XML_ATTR_TYPE_BLANK, CellType.BLANK) {
       @Override
       public String getValue(Cell cell, XmlStyle style) {
         return "";
@@ -138,15 +140,15 @@ class ExcelHelper {
     };
 
     String myType;
-    int myCellType;
+    CellType myCellType;
 
-    CellHandler(String type, int cellType) {
+    CellHandler(String type, CellType cellType) {
       myType = type;
       myCellType = cellType;
     }
 
     public CellHandler getHandler(Cell cell) {
-      if (myCellType == cell.getCellType()) {
+      if (cell.getCellType() == myCellType) {
         return this;
       }
       return null;

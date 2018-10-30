@@ -3,6 +3,7 @@ package com.adaptris.core.poi;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.util.ExceptionHelper;
 import com.adaptris.util.XmlUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -49,7 +51,7 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
       writeXmlDocument(d, msg);
     }
     catch (Exception e) {
-      throw new ServiceException(e);
+      throw ExceptionHelper.wrapServiceException(e);
     }
   }
 
@@ -57,7 +59,7 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
     try (OutputStream out = msg.getOutputStream()) {
       String encoding = getXmlStyle().evaluateEncoding(msg);
       new XmlUtils().writeDocument(doc, out, encoding);
-      msg.setCharEncoding(encoding);
+      msg.setContentEncoding(encoding);
     }
   }
 
@@ -70,15 +72,8 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   }
 
   @Override
-  public void start() throws CoreException {
-    super.start();
-  }
-
-  @Override
-  public void stop() {
-    super.stop();
-  }
-
+  public void prepare() throws CoreException {}
+  
   public XmlStyle getXmlStyle() {
     return xmlStyle;
   }
@@ -107,15 +102,12 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   }
   
   public boolean ignoreNullRows() {
-    return getIgnoreNullRows() != null ? getIgnoreNullRows().booleanValue() : false;
+    return BooleanUtils.toBooleanDefaultIfNull(getIgnoreNullRows(), false);
   }
 
   public Logger logger() {
-    return LoggerFactory.getLogger(ExcelToXml.class);
+    return this.log;
   }
 
-
-  @Override
-  public void prepare() throws CoreException {}
 
 }
