@@ -69,15 +69,12 @@ group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
 
-// In this section you declare where to find the dependencies of your project
 repositories {
-  jcenter()
+  mavenCentral()
   maven { url "$defaultNexusRepo" }
-  maven { url "https://nexus.adaptris.net/nexus/content/groups/public" }
-  maven { url "https://nexus.adaptris.net/nexus/content/repositories/snapshots" }
-  maven { url "https://nexus.adaptris.net/nexus/content/repositories/releases" }
+  maven { url "$nexusBaseUrl/content/groups/public" }
+  maven { url "$nexusBaseUrl/content/repositories/snapshots" }
 }
-
 
 configurations {
   javadoc {}
@@ -106,7 +103,7 @@ dependencies {
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
-  umlDoclet("nl.talsmasoftware:umldoclet:1.1.1")
+  umlDoclet("nl.talsmasoftware:umldoclet:1.1.2")
 
   testCompile ('junit:junit:4.12')
   testCompile ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true}
