@@ -193,12 +193,11 @@ public class XmlStyle {
    * If not specified the following rules will be applied:
    * </p>
    * <ol>
-   * <li>If the {@link AdaptrisMessage#getCharEncoding()} is non-null then that will be used.</li>
-   * <li>The platform String encoding style is used (e.g. cp1252 on Windows, UTF-8 on RHEL5) - this is generally derived from the
-   * global system property <code>file.encoding</code></li>
+   * <li>If the {@link AdaptrisMessage#getContentEncoding()} is non-null then that will be used.</li>
+   * <li>UTF-8</li>
    * </ol>
    * <p>
-   * As a result; the character encoding on the message is always set using {@link AdaptrisMessage#setCharEncoding(String)}.
+   * As a result; the character encoding on the message is always set using {@link AdaptrisMessage#setContentEncoding(String)}.
    * </p>
    */
   public void setXmlEncoding(String encoding) {
@@ -206,12 +205,12 @@ public class XmlStyle {
   }
 
   String evaluateEncoding(AdaptrisMessage msg) {
-    String encoding = System.getProperty("file.encoding");
+    String encoding = "UTF-8";
     if (!isEmpty(getXmlEncoding())) {
       encoding = getXmlEncoding();
     }
-    else if (!isEmpty(msg.getCharEncoding())) {
-      encoding = msg.getCharEncoding();
+    else if (!isEmpty(msg.getContentEncoding())) {
+      encoding = msg.getContentEncoding();
     }
     return encoding;
   }
