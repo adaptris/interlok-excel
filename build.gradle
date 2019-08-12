@@ -27,7 +27,7 @@ ext {
   componentName='Interlok/Excel (POI) integration'
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '1.7.27'
+  slf4jVersion = '1.7.28'
   log4j2Version = '2.12.1'
   poiVersion = '4.1.0'
 
