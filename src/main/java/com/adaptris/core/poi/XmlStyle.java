@@ -3,7 +3,7 @@ package com.adaptris.core.poi;
 import static com.adaptris.core.poi.ExcelHelper.createCellName;
 import static com.adaptris.core.poi.ExcelHelper.getCellCount;
 import static com.adaptris.core.poi.ExcelHelper.safeName;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
