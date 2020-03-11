@@ -1,5 +1,8 @@
 package com.adaptris.core.poi;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 import org.w3c.dom.Document;
 
 import com.adaptris.core.AdaptrisMessage;
@@ -20,8 +24,8 @@ public class PoiServiceTest extends ServiceCase {
   public static final String KEY_SAMPLE_INPUT = "poi.sample.input";
   private DefaultMessageFactory dMessageFactory = new DefaultMessageFactory();
   
-  public PoiServiceTest(String name) {
-    super(name);
+  public PoiServiceTest() {
+    super();
   }
 
   @Override
@@ -41,6 +45,7 @@ public class PoiServiceTest extends ServiceCase {
     }
   }
   
+  @Test
   public void testService() throws Exception {
     AdaptrisMessage msg = dMessageFactory.newMessage(readFile(PROPERTIES.getProperty(KEY_SAMPLE_INPUT)));
     ExcelToXml service = new ExcelToXml();
@@ -58,4 +63,9 @@ public class PoiServiceTest extends ServiceCase {
       stop(service);
     }
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  }   
 }

@@ -1,19 +1,22 @@
 package com.adaptris.core.poi;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
-
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-
 import com.adaptris.core.BaseCase;
 import com.adaptris.util.XmlUtils;
 import com.adaptris.util.text.xml.XPath;
@@ -25,20 +28,11 @@ public class ExcelConverterTest extends BaseCase {
   public static final String KEY_SAMPLE_INPUT_WITH_HEADER = "poi.sample.input.header";
   public static final String KEY_SAMPLE_XLSX_INPUT_WITH_HEADER = "poi.sample.xlsx.header";
   
-  public ExcelConverterTest(String name) {
-    super(name);
+  public ExcelConverterTest() {
+    super();
   }
 
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
-  }
-
-  @Override
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testDefaultConversion() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -57,6 +51,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testConversion_NullRow_IgnoreNullRowFalse() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_NULL);
@@ -73,6 +68,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testConversion_NullRow_IgnoreNullRow() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(true));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_NULL);
@@ -91,6 +87,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testSimpleConversion_emitRow() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -111,6 +108,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testSimpleConversion_emitAllAttributes_WithNumberFormat() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -135,6 +133,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testSimpleConversion_emitAllAttributes() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -159,6 +158,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testPositionalConversion() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -177,6 +177,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testPositionalConversion_emitAllAttributes() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -202,6 +203,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testHeaderRowConversion_XLSX() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_XLSX_INPUT_WITH_HEADER);
@@ -227,6 +229,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testHeaderRowConversion() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -245,6 +248,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testHeaderRowConversion_emitAllAttributes() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT);
@@ -270,6 +274,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testHeaderRowConversion_Offset() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
@@ -289,6 +294,7 @@ public class ExcelConverterTest extends BaseCase {
     }
   }
 
+  @Test
   public void testHeaderRowConversion_Offset_EmitAllAttributes() throws Exception {
     ExcelConverter c = new ExcelConverter(new BasicExcelConverterContext(false));
     InputStream in = createFromProperty(KEY_SAMPLE_INPUT_WITH_HEADER);
@@ -339,4 +345,9 @@ public class ExcelConverterTest extends BaseCase {
     }
 
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  }  
 }
