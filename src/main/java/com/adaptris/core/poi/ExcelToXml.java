@@ -7,7 +7,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.adaptris.annotation.AdapterComponent;
@@ -101,10 +100,12 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
     this.ignoreNullRows = b;
   }
   
+  @Override
   public boolean ignoreNullRows() {
     return BooleanUtils.toBooleanDefaultIfNull(getIgnoreNullRows(), false);
   }
 
+  @Override
   public Logger logger() {
     return this.log;
   }
