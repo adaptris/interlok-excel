@@ -145,8 +145,12 @@ configurations.all {
 dependencies {
   api ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   api ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
-  implementation ("org.apache.poi:poi:$poiVersion")
+  implementation ("org.apache.poi:poi:$poiVersion") {
+    exclude group: "org.apache.commons", module: "commons-compress"
+  }
   implementation ("org.apache.poi:poi-ooxml:$poiVersion")
+  
+  implementation ("org.apache.commons:commons-compress:1.21")
 
   implementation ("org.slf4j:slf4j-api:$slf4jVersion")
 
