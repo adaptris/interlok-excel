@@ -38,12 +38,6 @@ class ExcelHelper {
 
   static final int LETTERS_IN_ALPHABET = 26;
 
-  private static final String[] INVALID_CHARS =
-  {
-      "\\\\", "\\?", "\\*", "\\:", " ", "\\|", "&", "\\\"", "\\'", "<", ">", "\\)", "\\(", "\\/"
-  };
-  private static final String REPLACEMENT_VALUE = "_";
-
   private static final GuidGenerator guid = new GuidGenerator();
 
   // Obtuse use of enums as both an interface and factory...
@@ -96,8 +90,7 @@ class ExcelHelper {
           }
           catch (Exception e1) {
             // Expect this error if the cell contains an invalid formula
-            String errorString = FormulaError.forInt(cell.getErrorCellValue()).getString();
-            return errorString;
+            return FormulaError.forInt(cell.getErrorCellValue()).getString();
           }
         }
       }
@@ -137,8 +130,8 @@ class ExcelHelper {
       }
     };
 
-    String myType;
-    CellType myCellType;
+    final String myType;
+    final CellType myCellType;
 
     CellHandler(String type, CellType cellType) {
       myType = type;
@@ -157,7 +150,7 @@ class ExcelHelper {
     public String getType() {
       return myType;
     }
-  };
+  }
 
   static CellHandler getHandler(Cell cell) throws Exception {
     if (cell == null) {
@@ -214,11 +207,10 @@ class ExcelHelper {
     // are zero indexed.
     int cell = colNumber + 1;
     StringBuilder cellName = new StringBuilder();
-    int asciiIndex = 0;
     while (cell > 0) {
-      asciiIndex = (cell - 1) % LETTERS_IN_ALPHABET;
+      int asciiIndex = (cell - 1) % LETTERS_IN_ALPHABET;
       cellName.append((char) (asciiIndex + 'A'));
-      cell = (int) ((cell - asciiIndex) / LETTERS_IN_ALPHABET);
+      cell = (cell - asciiIndex) / LETTERS_IN_ALPHABET;
     }
     return cellName.reverse().toString();
   }
