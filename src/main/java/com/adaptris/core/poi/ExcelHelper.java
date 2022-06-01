@@ -1,6 +1,6 @@
 package com.adaptris.core.poi;
 
-import org.apache.poi.ss.formula.FormulaType;
+import com.adaptris.core.util.Args;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -13,9 +13,9 @@ import com.adaptris.util.GuidGenerator;
 
 /**
  * Various helper methods for handling the horrible spreadsheet format.
- * 
+ *
  * @author lchan
- * 
+ *
  */
 class ExcelHelper {
 
@@ -36,15 +36,7 @@ class ExcelHelper {
   static final String XML_ELEMENT_WORKSHEET = "sheet";
   static final String XML_ELEMENT_SPREADSHEET = "spreadsheet";
 
-  private enum ColumnCells {
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
-  }
-
-  private static final String[] INVALID_CHARS =
-  {
-      "\\\\", "\\?", "\\*", "\\:", " ", "\\|", "&", "\\\"", "\\'", "<", ">", "\\)", "\\(", "\\/"
-  };
-  private static final String REPLACEMENT_VALUE = "_";
+  static final int LETTERS_IN_ALPHABET = 26;
 
   private static final GuidGenerator guid = new GuidGenerator();
 
@@ -98,8 +90,7 @@ class ExcelHelper {
           }
           catch (Exception e1) {
             // Expect this error if the cell contains an invalid formula
-            String errorString = FormulaError.forInt(cell.getErrorCellValue()).getString();
-            return errorString;
+            return FormulaError.forInt(cell.getErrorCellValue()).getString();
           }
         }
       }
@@ -139,8 +130,8 @@ class ExcelHelper {
       }
     };
 
-    String myType;
-    CellType myCellType;
+    final String myType;
+    final CellType myCellType;
 
     CellHandler(String type, CellType cellType) {
       myType = type;
@@ -159,7 +150,7 @@ class ExcelHelper {
     public String getType() {
       return myType;
     }
-  };
+  }
 
   static CellHandler getHandler(Cell cell) throws Exception {
     if (cell == null) {
@@ -203,21 +194,39 @@ class ExcelHelper {
     return result;
   }
 
-  static String createCellName(final int cellNumber) {
-    String cellName = "";
-    int len = ColumnCells.values().length;
-    int cn = cellNumber;
-    // Handles the situation where you have more than 26 columns (see sample-input.xls) which will
-    // end up giving (hopefully) the names AA,AB,AC etc.
-    int first = cn / len;
-    if (first == 0) {
-      cellName += ColumnCells.values()[cn];
+  /** Create a standardised Excel column name based on the colNumber.
+   *
+   *  <p>Note that Excel has a limit of 16384 columns, this will cope with more columns than that, but accuracy
+   *  isn't guaranteed after column 16383.
+   *  </p>
+   * @param colNumber the position of the column, zero-indexed (i.e. 0 == 'A')
+   * @return the Excel column Name.
+   */
+  static String createCellName(final int colNumber) {
+    // This is a bit of a fudge because cell numbers from poi
+    // are zero indexed.
+    int cell = colNumber + 1;
+    StringBuilder cellName = new StringBuilder();
+    while (cell > 0) {
+      int asciiIndex = (cell - 1) % LETTERS_IN_ALPHABET;
+      cellName.append((char) (asciiIndex + 'A'));
+      cell = (cell - asciiIndex) / LETTERS_IN_ALPHABET;
     }
-    else {
-      cellName += ColumnCells.values()[first - 1];
-      cellName += ColumnCells.values()[cn % len];
+    return cellName.reverse().toString();
+  }
+
+  /** Return the computed cell name based on normal Excel Naming.
+   *
+   * @param columnName the name of the cell as showin in Excel
+   * @return the positional index that logically is (zero index, i.e. 0 == 'A')
+   */
+  static int numericColumnName(String columnName) {
+    int result = 0;
+    for (int i = 0; i < Args.notBlank(columnName, "columnName").length(); i++) {
+      result *= LETTERS_IN_ALPHABET;
+      result += columnName.charAt(i) - 'A' + 1;
     }
-    return cellName;
+    return result - 1;
   }
 
   static String safeName(String input) {
