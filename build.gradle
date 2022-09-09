@@ -32,7 +32,7 @@ ext {
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.36'
   mockitoVersion = '4.8.0'
-  poiVersion = '4.1.2'
+  poiVersion = '5.2.2'
 
 }
 
