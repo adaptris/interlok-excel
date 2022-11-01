@@ -150,7 +150,7 @@ dependencies {
   }
   implementation ("org.apache.poi:poi-ooxml:$poiVersion")
   
-  implementation ("org.apache.commons:commons-compress:1.21")
+  implementation ("org.apache.commons:commons-compress:1.22")
 
   implementation ("org.slf4j:slf4j-api:$slf4jVersion")
 
