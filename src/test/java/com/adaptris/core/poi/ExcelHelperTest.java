@@ -2,9 +2,9 @@ package com.adaptris.core.poi;
 
 import static com.adaptris.core.poi.ExcelHelper.createCellName;
 import static com.adaptris.core.poi.ExcelHelper.numericColumnName;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExcelHelperTest {
 
