@@ -21,6 +21,7 @@ import com.adaptris.core.BaseCase;
 import com.adaptris.util.XmlUtils;
 import com.adaptris.util.text.xml.XPath;
 
+@SuppressWarnings("deprecation")
 public class ExcelConverterTest extends BaseCase {
   public static final String TMP_DIR_KEY = "tmp.dir";
   public static final String KEY_SAMPLE_INPUT = "poi.sample.input";
