@@ -30,10 +30,9 @@ ext {
 
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '2.0.3'
-  mockitoVersion = '4.9.0'
+  slf4jVersion = '2.0.7'
+  mockitoVersion = '5.2.0'
   poiVersion = '5.2.3'
-
 }
 
 ext.hostname = { ->
@@ -150,7 +149,7 @@ dependencies {
   }
   implementation ("org.apache.poi:poi-ooxml:$poiVersion")
   
-  implementation ("org.apache.commons:commons-compress:1.21")
+  implementation ("org.apache.commons:commons-compress:1.23.0")
 
   implementation ("org.slf4j:slf4j-api:$slf4jVersion")
 
@@ -166,9 +165,7 @@ dependencies {
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-common:$interlokCoreVersion:javadoc@jar") { changing= true}
-
 }
-
 
 jar {
   manifest {
@@ -180,7 +177,6 @@ jar {
                "Implementation-Vendor": organizationName)
   }
 }
-
 
 sourceSets {
   main {
@@ -201,7 +197,7 @@ task copyUnitTestProperties(type: Copy) {
 }
 
 task deleteUnitTestProperties(type: Delete) {
-    delete file('src/test/resources/unit-tests.properties')
+  delete file('src/test/resources/unit-tests.properties')
 }
 
 // Generate the META-INF/adaptris-version file
@@ -290,10 +286,10 @@ task umlJavadoc(type: Javadoc) {
 }
 
 jacocoTestReport {
-    reports {
-        xml.required= true
-        html.required= true
-    }
+  reports {
+    xml.required= true
+    html.required= true
+  }
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -302,8 +298,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+  classifier = 'sources'
+  from sourceSets.main.allSource
 }
 
 task examplesJar(type: Jar, dependsOn: test) {
@@ -329,7 +325,7 @@ publishing {
       pom.withXml {
         asNode().appendNode("name", componentName)
         asNode().appendNode("description", componentDesc)
-		asNode().appendNode("url", "https://interlok.adaptris.net/interlok-docs/#/")
+        asNode().appendNode("url", "https://interlok.adaptris.net/interlok-docs/#/")
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.8.0+")
         properties.appendNode("tags", "excel,xls,xlsx")
@@ -363,9 +359,6 @@ spotbugsMain {
   }
 }
 
-// disable spotbugsTests which checks our test code..
-spotbugsTest.enabled = false
-
 dependencyCheck  {
   suppressionFiles= [ "https://raw.githubusercontent.com/adaptris/interlok/develop/gradle/owasp-exclude.xml" ]
   scanConfigurations = [ "api", "compileClasspath", "runtimeClasspath" ]
@@ -377,6 +370,9 @@ dependencyCheck  {
     knownExploitedURL=project.findProperty('dependencyCheckKnownExploitedURL')
   }
 }
+
+// disable spotbugsTests which checks our test code..
+spotbugsTest.enabled = false
 
 check.dependsOn jacocoTestReport
 processTestResources.dependsOn copyUnitTestProperties
