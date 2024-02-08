@@ -31,10 +31,6 @@ public class PoiServiceTest extends ExampleServiceCase {
   public static final String KEY_SAMPLE_INPUT_WITH_NULL = "poi.sample.input.null";
   private DefaultMessageFactory dMessageFactory = new DefaultMessageFactory();
 
-  public PoiServiceTest() {
-    super();
-  }
-
   @Override
   protected Object retrieveObjectForSampleConfig() {
     return new ExcelToXml();
@@ -46,7 +42,7 @@ public class PoiServiceTest extends ExampleServiceCase {
   }
 
   protected static byte[] readFile(String path) throws IOException {
-    try (ByteArrayOutputStream out = new ByteArrayOutputStream(); InputStream in = new FileInputStream(new File(path))){
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream(); InputStream in = new FileInputStream(new File(path))) {
       IOUtils.copy(in, out);
       return out.toByteArray();
     }
@@ -62,8 +58,7 @@ public class PoiServiceTest extends ExampleServiceCase {
       service.doService(msg);
       Document d = XmlHelper.createDocument(msg, DocumentBuilderFactoryBuilder.newInstance());
       assertDocument(d);
-    }
-    finally {
+    } finally {
       stop(service);
     }
   }

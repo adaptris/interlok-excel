@@ -28,6 +28,7 @@ class ExcelConverter {
 
   interface ExcelConverterContext {
     boolean ignoreNullRows();
+
     Logger logger();
   }
 
@@ -71,8 +72,7 @@ class ExcelConverter {
           if (!context.ignoreNullRows()) {
             throw new Exception("Unable to process row " + (rowCounter + 1) + "; it's null");
           }
-        }
-        else {
+        } else {
           processRow(row, sheetElement, styleGuide, columnNames);
         }
       }
@@ -96,7 +96,7 @@ class ExcelConverter {
       CellHandler handler = ExcelHelper.getHandler(cell);
       String value = handler.getValue(cell, styleGuide);
       String type = handler.getType();
-      context.logger().trace("Cell ({},{}) is a [{}] and the computed value is [{}]", rowCounter, i+1, type, value);
+      context.logger().trace("Cell ({},{}) is a [{}] and the computed value is [{}]", rowCounter, i + 1, type, value);
       // if showDataTypes is true, add the attribute to the xml node
       if (styleGuide.emitDataTypeAttr()) {
         cellElement.setAttribute(XML_ATTR_TYPE, type);

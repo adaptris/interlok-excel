@@ -95,16 +95,15 @@ public class XmlStyle {
     return emitDataTypeAttr;
   }
 
-
   /**
    * Whether or not to emit a type attribute for each cell.
    *
-   * @param b true or false, default false.
+   * @param b
+   *          true or false, default false.
    */
   public void setEmitDataTypeAttr(Boolean b) {
     emitDataTypeAttr = b;
   }
-
 
   boolean emitDataTypeAttr() {
     return getEmitDataTypeAttr() != null ? getEmitDataTypeAttr().booleanValue() : false;
@@ -117,7 +116,8 @@ public class XmlStyle {
   /**
    * Whether or not to emit a row number attribute for each row.
    *
-   * @param b true or false, default false
+   * @param b
+   *          true or false, default false
    */
   public void setEmitRowNumberAttr(Boolean b) {
     emitRowNumberAttr = b;
@@ -134,7 +134,8 @@ public class XmlStyle {
   /**
    * Whether or not to emit an absolute cell position attribute for each cell in a row.
    *
-   * @param b true or false, default false
+   * @param b
+   *          true or false, default false
    */
   public void setEmitCellPositionAttr(Boolean b) {
     emitCellPositionAttr = b;
@@ -151,12 +152,12 @@ public class XmlStyle {
   /**
    * Set the date format for date fields.
    *
-   * @param dateFormat the date format, default is "yyyy-MM-dd'T'HH:mm:ssZ"
+   * @param dateFormat
+   *          the date format, default is "yyyy-MM-dd'T'HH:mm:ssZ"
    */
   public void setDateFormat(String dateFormat) {
     this.dateFormat = dateFormat;
   }
-
 
   String format(Date d) {
     if (dateFormatter == null) {
@@ -175,8 +176,9 @@ public class XmlStyle {
 
   /**
    * Set how element names are generated
-   * 
-   * @param s the style; one of SIMPLE, CELL_POSITION, HEADER_ROW. Default is SIMPLE
+   *
+   * @param s
+   *          the style; one of SIMPLE, CELL_POSITION, HEADER_ROW. Default is SIMPLE
    * @see ElementNaming
    */
   public void setElementNamingStyle(ElementNaming s) {
@@ -208,8 +210,7 @@ public class XmlStyle {
     String encoding = "UTF-8";
     if (!isEmpty(getXmlEncoding())) {
       encoding = getXmlEncoding();
-    }
-    else if (!isEmpty(msg.getContentEncoding())) {
+    } else if (!isEmpty(msg.getContentEncoding())) {
       encoding = msg.getContentEncoding();
     }
     return encoding;
@@ -221,9 +222,10 @@ public class XmlStyle {
 
   /**
    * Set the format for numeric fields
-   * 
+   *
    * @see DecimalFormat
-   * @param s the format; default is null, which means to use {@link String#valueOf(double)}
+   * @param s
+   *          the format; default is null, which means to use {@link String#valueOf(double)}
    */
   public void setNumberFormat(String s) {
     numberFormat = s;
@@ -248,13 +250,13 @@ public class XmlStyle {
   }
 
   /**
-   * If element name generation style is {@link ElementNaming#HEADER_ROW} then use this to specify which row is considered the
-   * header.
+   * If element name generation style is {@link ElementNaming#HEADER_ROW} then use this to specify which row is considered the header.
    * <p>
    * If you specify a header row, then all rows preceding the header row will be skipped.
    * </p>
    *
-   * @param i the header row (starts from 1); default is 1.
+   * @param i
+   *          the header row (starts from 1); default is 1.
    */
   public void setHeaderRow(Integer i) {
     headerRow = i;

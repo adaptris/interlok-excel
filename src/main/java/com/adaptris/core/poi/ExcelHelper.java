@@ -1,6 +1,5 @@
 package com.adaptris.core.poi;
 
-import com.adaptris.core.util.Args;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -8,6 +7,7 @@ import org.apache.poi.ss.usermodel.FormulaError;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.adaptris.core.util.Args;
 import com.adaptris.core.util.XmlHelper;
 import com.adaptris.util.GuidGenerator;
 
@@ -69,8 +69,7 @@ class ExcelHelper {
             if (DateUtil.isCellDateFormatted(cell)) {
               return DATE_CELL;
             }
-          }
-          catch (Exception e) {
+          } catch (Exception e) {
             // Expect this error if the cell contains an invalid formula
           }
           return this;
@@ -82,13 +81,11 @@ class ExcelHelper {
       public String getValue(Cell cell, XmlStyle style) {
         try {
           return style.format(cell.getNumericCellValue());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           // Expect this error if the cell contains formula that doesn't create number
           try {
             return cell.getRichStringCellValue().getString();
-          }
-          catch (Exception e1) {
+          } catch (Exception e1) {
             // Expect this error if the cell contains an invalid formula
             return FormulaError.forInt(cell.getErrorCellValue()).getString();
           }
@@ -175,8 +172,7 @@ class ExcelHelper {
     // 0 means 0 rows on the sheet, or one at position zero.
     if (result == 0) {
       result = sheet.getPhysicalNumberOfRows();
-    }
-    else {
+    } else {
       result = result + 1;
     }
     return result;
@@ -194,12 +190,16 @@ class ExcelHelper {
     return result;
   }
 
-  /** Create a standardised Excel column name based on the colNumber.
+  /**
+   * Create a standardised Excel column name based on the colNumber.
    *
-   *  <p>Note that Excel has a limit of 16384 columns, this will cope with more columns than that, but accuracy
-   *  isn't guaranteed after column 16383.
-   *  </p>
-   * @param colNumber the position of the column, zero-indexed (i.e. 0 == 'A')
+   * <p>
+   * Note that Excel has a limit of 16384 columns, this will cope with more columns than that, but accuracy isn't guaranteed after column
+   * 16383.
+   * </p>
+   *
+   * @param colNumber
+   *          the position of the column, zero-indexed (i.e. 0 == 'A')
    * @return the Excel column Name.
    */
   static String createCellName(final int colNumber) {
@@ -215,9 +215,11 @@ class ExcelHelper {
     return cellName.reverse().toString();
   }
 
-  /** Return the computed cell name based on normal Excel Naming.
+  /**
+   * Return the computed cell name based on normal Excel Naming.
    *
-   * @param columnName the name of the cell as showin in Excel
+   * @param columnName
+   *          the name of the cell as showin in Excel
    * @return the positional index that logically is (zero index, i.e. 0 == 'A')
    */
   static int numericColumnName(String columnName) {
@@ -232,4 +234,5 @@ class ExcelHelper {
   static String safeName(String input) {
     return XmlHelper.safeElementName(input, "blank_" + guid.safeUUID());
   }
+
 }
