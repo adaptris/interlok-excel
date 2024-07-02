@@ -19,26 +19,25 @@ import com.adaptris.core.util.ExceptionHelper;
 import com.adaptris.util.XmlUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-
 /**
  * Service to extract data from an Excel spreadsheet.
- * 
+ *
  * @config excel-to-xml-service
  * @license STANDARD
  * @author lchan
- * 
+ *
  */
 @XStreamAlias("excel-to-xml-service")
 @AdapterComponent
 @ComponentProfile(summary = "Convert an Excel Spreadsheet to XML", tag = "service,transform,excel,xml")
 public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConverterContext {
+
   private XmlStyle xmlStyle;
   private Boolean ignoreNullRows;
 
   public ExcelToXml() {
     setXmlStyle(new XmlStyle());
   }
-
 
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
@@ -48,8 +47,7 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
       workbook = WorkbookFactory.create(in);
       Document d = converter.convertToXml(workbook, getXmlStyle());
       writeXmlDocument(d, msg);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw ExceptionHelper.wrapServiceException(e);
     }
   }
@@ -71,8 +69,9 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   }
 
   @Override
-  public void prepare() throws CoreException {}
-  
+  public void prepare() throws CoreException {
+  }
+
   public XmlStyle getXmlStyle() {
     return xmlStyle;
   }
@@ -88,18 +87,19 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
   /**
    * Set to true to ignore null rows.
    * <p>
-   * In some spreadsheets it is possible to get a null Row object when doing {@code Row row = sheet.getRow(i)}. Set this to be true
-   * to silently ignore errors, which means you may a mismatch between the number of rows in the spreadsheet vs the number of Row
-   * elements in the resulting XML.
+   * In some spreadsheets it is possible to get a null Row object when doing {@code Row row = sheet.getRow(i)}. Set this to be true to
+   * silently ignore errors, which means you may a mismatch between the number of rows in the spreadsheet vs the number of Row elements in
+   * the resulting XML.
    * </p>
-   * 
-   * @param b true to ignore rows that are null; default null (false).
+   *
+   * @param b
+   *          true to ignore rows that are null; default null (false).
    * @since 3.0.3
    */
   public void setIgnoreNullRows(Boolean b) {
-    this.ignoreNullRows = b;
+    ignoreNullRows = b;
   }
-  
+
   @Override
   public boolean ignoreNullRows() {
     return BooleanUtils.toBooleanDefaultIfNull(getIgnoreNullRows(), false);
@@ -107,8 +107,7 @@ public class ExcelToXml extends ServiceImp implements ExcelConverter.ExcelConver
 
   @Override
   public Logger logger() {
-    return this.log;
+    return log;
   }
-
 
 }
