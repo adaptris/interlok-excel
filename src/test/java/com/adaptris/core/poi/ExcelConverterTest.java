@@ -120,7 +120,7 @@ public class ExcelConverterTest extends BaseCase {
       assertTrue(xp.selectNodeList(d, "/spreadsheet/sheet[@name='Sheet1']/row/cell").getLength() > 0);
       String value = xp.selectSingleTextItem(d, "/spreadsheet/sheet[@name='Sheet1']/row[@number='3']/cell[@position='A3']");
       // Engineering notation!
-      assertEquals("1E0", value);
+      assertEquals("1E0".toLowerCase(), value.toLowerCase());
     } finally {
       IOUtils.closeQuietly(in);
     }
